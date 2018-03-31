@@ -21,7 +21,7 @@
             <input type="text" v-model="roundsCount" /> rounds
             <input type="text" v-model="intervalTime" /> second intervals
             <input type="text" v-model="breakTime" /> seconds rest
-            <button id="settings">Update</button>
+            <button v-on:click='settingsButton'>Update</button>
         </p>
 
         <h1>{{ statusHeader }}</h1>
