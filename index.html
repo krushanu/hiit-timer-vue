@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HIIT Timer</title>
+    <link href='https://fonts.googleapis.com/css?family=Oswald:300' rel='stylesheet' type='text/css'>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <script src="https://unpkg.com/vue"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <h2>HIIT Timer</h2>
+
+        <p class="controls">
+            <input type="text" v-model="roundsCount" /> rounds
+            <input type="text" v-model="intervalTime" /> second intervals
+            <input type="text" v-model="breakTime" /> seconds rest
+            <button id="settings">Update</button>
+        </p>
+
+        <h1>{{ statusHeader }}</h1>
+
+        <p class="m-large">
+            <span>{{ roundSpan }}</span>
+        </p>
+
+        <p class="large">
+            <span>{{ secondsSpan }}</span>
+        </p>
+
+        <p>
+            <button v-on:click='startButton'>Start</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button v-on:click='pauseButton'>Pause</button>
+        </p>
+        <p>
+            <button v-on:click='resetButton'>Reset</button>
+        </p>
+
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                seconds: 20,
+                rounds: 4,
+                rest: true,
+                interval: undefined,
+
+                intervalTime: 20,
+                breakTime: 10,
+                roundsCount: 4,
+
+                intervalInput: this.intervalTime,
+                breakInput: this.breakTime,
+                roundsInput: this.roundsCount,
+
+                statusHeader: "Rest",
+                secondsSpan: '20',
+                roundSpan: 4
+            },
+            methods: {
+                reverseMessage: function () {
+                    this.message = this.message.split('').reverse().join('')
+                },
+
+                settingsButton: function () {
+                    this.intervalTime = Math.floor(this.intervalInput * 1);
+                    this.breakTime = Math.floor(this.breakInput * 1);
+                    this.roundsCount = Math.floor(this.roundsInput * 1);
+                    if (this.checkForValidInput()) {
+                        this.reset();
+                    } else {
+                        alert('Invalid Entry !!!')
+                    }
+                },
+
+                startButton: function () {
+                    if (this.checkForValidInput()) {
+                        this.rest = false;
+                        this.changeToGo();
+                        this.interval = setInterval(this.countdownSeconds, 1000);
+                    } else {
+                        alert('Invalid Entry !!!')
+                    }
+                },
+
+                resetButton: function () {
+                    this.reset();
+                },
+
+                reset: function () {
+                    clearInterval(this.interval);
+                    this.seconds = this.intervalTime;
+                    this.rounds = this.roundsCount;
+                    this.secondsSpan = this.seconds;
+                    this.roundSpan = this.rounds;
+                    this.rest = true;
+                },
+
+                pauseButton: function () {
+                    clearInterval(this.interval);
+                },
+
+                countdownSeconds: function () {
+                    if (this.rounds) {
+                        this.seconds -= 1;
+                        this.secondsSpan = this.seconds;
+                        this.checkForStateChange();
+                    } else {
+                        this.clearInterval(interval);
+                        this.secondsSpan = 'Congrats !!!';
+                    }
+                },
+
+                checkForValidInput: function () {
+                    var rtnValue = false;
+                    if (this.intervalTime > 0 && this.breakTime > 0 && this.roundsCount > 0) rtnValue = true;
+                    return rtnValue;
+                },
+
+                checkForStateChange: function () {
+                    if (this.seconds == 0 && this.rest == false) {
+                        this.seconds = this.breakTime + 1;
+                        this.rest = true;
+                        this.rounds -= 1;
+                        this.changeToRest();
+                    } else if (this.seconds == 0 && this.rest == true) {
+                        this.seconds = this.intervalTime + 1;
+                        this.rest = false;
+                        this.changeToGo();
+                    }
+                },
+
+                changeToRest: function () {
+                    this.roundSpan = this.rounds;
+                    $("body").css("background", "cyan");
+                    this.statusHeader = "Rest";
+                },
+
+                changeToGo: function () {
+                    $("body").css("background", "pink");
+                    this.statusHeader = "Go!";
+                }
+                
+            }
+        })
+    </script>
+</body>
+
+</html>
