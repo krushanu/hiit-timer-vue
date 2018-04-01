@@ -9,7 +9,7 @@
     <title>HIIT Timer</title>
     <link href='https://fonts.googleapis.com/css?family=Oswald:300' rel='stylesheet' type='text/css'>
     <link href="style.css" rel="stylesheet" type="text/css">
-    <script src="https://unpkg.com/vue"></script>
+    <script src="vue.js"></script>
 
 </head>
 
@@ -78,7 +78,7 @@
                     if (this.isPaused == true) {
                         this.isPaused = false;
                         this.changeToGo();
-                    } else {
+                    } else if (this.rest) {
                         if (this.checkForValidInput()) {
                             this.rest = false;
                             this.changeToGo();
@@ -131,27 +131,25 @@
                 checkForStateChange: function () {
                     if (this.seconds == 0 && this.rest == false) {
                         this.seconds = this.breakTime + 1;
-                        this.rest = true;
                         this.rounds -= 1;
                         this.changeToRest();
                     } else if (this.seconds == 0 && this.rest == true) {
                         this.seconds = this.intervalTime + 1;
-                        this.rest = false;
                         this.changeToGo();
                     }
                 },
 
                 changeToRest: function () {
+                    this.rest = true;
                     this.roundSpan = this.rounds;
                     document.body.style.backgroundColor = "cyan";
                     this.statusHeader = "Rest";
                 },
 
                 changeToGo: function () {
-                    if (!this.rest) {
-                        document.body.style.backgroundColor = "pink";
-                        this.statusHeader = "Go!";
-                    }
+                    this.rest = false;                        
+                    document.body.style.backgroundColor = "pink";
+                    this.statusHeader = "Go!";
                 }
                 
             }
