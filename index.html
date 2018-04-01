@@ -45,11 +45,12 @@
 
 
     </div>
-    
+
     <script>
         var app = new Vue({
             el: '#app',
             data: {
+                isPaused: false,
                 seconds: 20,
                 rounds: 4,
                 rest: true,
@@ -74,12 +75,17 @@
                 },
 
                 startButton: function () {
-                    if (this.checkForValidInput()) {
-                        this.rest = false;
+                    if (this.isPaused == true) {
+                        this.isPaused = false;
                         this.changeToGo();
-                        this.interval = setInterval(this.countdownSeconds, 1000);
                     } else {
-                        alert('Invalid Entry !!!')
+                        if (this.checkForValidInput()) {
+                            this.rest = false;
+                            this.changeToGo();
+                            this.interval = setInterval(this.countdownSeconds, 1000);
+                        } else {
+                            alert('Invalid Entry !!!')
+                        }
                     }
                 },
 
@@ -89,6 +95,7 @@
 
                 reset: function () {
                     clearInterval(this.interval);
+                    this.isPaused = false;                    
                     this.seconds = this.intervalTime;
                     this.rounds = this.roundsCount;
                     this.secondsSpan = this.seconds;
@@ -98,17 +105,20 @@
                 },
 
                 pauseButton: function () {
-                    clearInterval(this.interval);
+                    this.isPaused = true;
+                    this.changeToRest();
                 },
 
                 countdownSeconds: function () {
-                    if (this.rounds) {
-                        this.seconds -= 1;
-                        this.secondsSpan = this.seconds;
-                        this.checkForStateChange();
-                    } else {
-                        clearInterval(this.interval);
-                        this.secondsSpan = 'Congrats !!!';
+                    if(!this.isPaused) {
+                        if (this.rounds) {
+                            this.seconds -= 1;
+                            this.secondsSpan = this.seconds;
+                            this.checkForStateChange();
+                        } else {
+                            clearInterval(this.interval);
+                            this.secondsSpan = 'Congrats !!!';
+                        }
                     }
                 },
 
