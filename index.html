@@ -18,9 +18,9 @@
         <h2>HIIT Timer</h2>
 
         <p class="controls">
-            <input type="text" v-model="roundsCount" /> rounds
-            <input type="text" v-model="intervalTime" /> second intervals
-            <input type="text" v-model="breakTime" /> seconds rest
+            <input type="text" v-model.number="roundsCount" /> rounds
+            <input type="text" v-model.number="intervalTime" /> second intervals
+            <input type="text" v-model.number="breakTime" /> seconds rest
             <button v-on:click='settingsButton'>Update</button>
         </p>
 
@@ -57,14 +57,10 @@
                 rest: true,
                 interval: undefined,
 
+                roundsCount: 4,
                 intervalTime: 20,
                 breakTime: 10,
-                roundsCount: 4,
-
-                intervalInput: this.intervalTime,
-                breakInput: this.breakTime,
-                roundsInput: this.roundsCount,
-
+                
                 statusHeader: "Rest",
                 secondsSpan: '20',
                 roundSpan: 4
@@ -72,9 +68,6 @@
             methods: {
 
                 settingsButton: function () {
-                    this.intervalTime = Math.floor(this.intervalInput * 1);
-                    this.breakTime = Math.floor(this.breakInput * 1);
-                    this.roundsCount = Math.floor(this.roundsInput * 1);
                     if (this.checkForValidInput()) {
                         this.reset();
                     } else {
@@ -103,6 +96,7 @@
                     this.secondsSpan = this.seconds;
                     this.roundSpan = this.rounds;
                     this.rest = true;
+                    this.changeToRest();
                 },
 
                 pauseButton: function () {
@@ -115,7 +109,7 @@
                         this.secondsSpan = this.seconds;
                         this.checkForStateChange();
                     } else {
-                        this.clearInterval(interval);
+                        clearInterval(this.interval);
                         this.secondsSpan = 'Congrats !!!';
                     }
                 },
