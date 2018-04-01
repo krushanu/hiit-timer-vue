@@ -148,8 +148,10 @@
                 },
 
                 changeToGo: function () {
-                    document.body.style.backgroundColor = "pink";
-                    this.statusHeader = "Go!";
+                    if (!this.rest) {
+                        document.body.style.backgroundColor = "pink";
+                        this.statusHeader = "Go!";
+                    }
                 }
                 
             }
