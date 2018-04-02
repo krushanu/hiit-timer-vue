@@ -122,12 +122,20 @@
                         if (this.rounds) {
                             this.seconds -= 1;
                             this.secondsSpan = this.seconds;
+                            if (this.seconds < 5 && this.seconds > 0) this.playSound('audio/Air-Plane-Ding.mp3');
+                            if (this.seconds == 0) this.playSound('audio/Elevator-Ding.mp3');
                             this.checkForStateChange();
                         } else {
                             clearInterval(this.interval);
+                            this.playSound('audio/End-Beep.mp3');
                             this.secondsSpan = 'Congrats !!!';
                         }
                     }
+                },
+                
+                playSound(sound) {
+                    var audio = new Audio(sound);
+                    audio.play();
                 },
 
                 checkForValidInput: function () {
@@ -150,7 +158,8 @@
 
                 changeToRest: function (statusText) {
                     this.roundSpan = this.rounds;
-                    document.body.style.backgroundColor = "cyan";
+                    var color = (statusText == 'ready ?') ? 'ghostwhite' : 'cyan';
+                    document.body.style.backgroundColor = color;
                     this.statusHeader = statusText;
                 },
 
