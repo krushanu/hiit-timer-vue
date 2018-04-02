@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -51,15 +51,16 @@
             el: '#app',
             data: {
                 isPaused: false,
+                rest: true,
                 seconds: 20,
                 rounds: 4,
-                rest: true,
                 interval: undefined,
+                isStatusRunning: false,
 
                 roundsCount: 4,
                 intervalTime: 20,
                 breakTime: 10,
-                
+
                 statusHeader: "Rest",
                 secondsSpan: '20',
                 roundSpan: 4
@@ -77,14 +78,18 @@
                 startButton: function () {
                     if (this.isPaused == true) {
                         this.isPaused = false;
-                        this.changeToGo();
-                    } else if (this.rest) {
+                        if (this.rest == false) {
+                            this.changeToGo();
+                        } else {
+                            this.changeToRest('rest');
+                        }
+                    } else if (this.isStatusRunning == false) {
                         if (this.checkForValidInput()) {
-                            this.rest = false;
+                            this.isStatusRunning = true;
                             this.changeToGo();
                             this.interval = setInterval(this.countdownSeconds, 1000);
                         } else {
-                            alert('Invalid Entry !!!')
+                            alert('Invalid Entry !!!');
                         }
                     }
                 },
@@ -95,22 +100,25 @@
 
                 reset: function () {
                     clearInterval(this.interval);
-                    this.isPaused = false;                    
+                    this.isPaused = false;
+                    this.isStatusRunning = false;
                     this.seconds = this.intervalTime;
                     this.rounds = this.roundsCount;
                     this.secondsSpan = this.seconds;
                     this.roundSpan = this.rounds;
                     this.rest = true;
-                    this.changeToRest();
+                    this.changeToRest('ready ?');
                 },
 
                 pauseButton: function () {
-                    this.isPaused = true;
-                    this.changeToRest();
+                    if (this.isStatusRunning == true || this.isPaused == true) {
+                        this.isPaused = true;
+                        this.changeToRest('pause');
+                    }
                 },
 
                 countdownSeconds: function () {
-                    if(!this.isPaused) {
+                    if (!this.isPaused) {
                         if (this.rounds) {
                             this.seconds -= 1;
                             this.secondsSpan = this.seconds;
@@ -132,26 +140,26 @@
                     if (this.seconds == 0 && this.rest == false) {
                         this.seconds = this.breakTime + 1;
                         this.rounds -= 1;
-                        this.changeToRest();
+                        this.rest = true;
+                        this.changeToRest('rest');
                     } else if (this.seconds == 0 && this.rest == true) {
                         this.seconds = this.intervalTime + 1;
                         this.changeToGo();
                     }
                 },
 
-                changeToRest: function () {
-                    this.rest = true;
+                changeToRest: function (statusText) {
                     this.roundSpan = this.rounds;
                     document.body.style.backgroundColor = "cyan";
-                    this.statusHeader = "Rest";
+                    this.statusHeader = statusText;
                 },
 
                 changeToGo: function () {
-                    this.rest = false;                        
+                    this.rest = false;
                     document.body.style.backgroundColor = "pink";
-                    this.statusHeader = "Go!";
+                    this.statusHeader = 'Go!';
                 }
-                
+
             }
         })
     </script>
